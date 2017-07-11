@@ -59,7 +59,7 @@ p <- ggplot(d,aes(x,y)) +
   scale_y_continuous(expand=c(0,0),limits=c(0,100))
 
 for(i in 1:20){ # repeats x times and draws to plot
-  e = gen_pois()
+  e <- gen_pois()
 
   d2 <- data.frame(
     y = e,
@@ -77,16 +77,19 @@ for(i in 1:20){ # repeats x times and draws to plot
 p <- p + geom_smooth(data=d,method='loess',se=F)
 p <- p + geom_histogram(data=d,stat='identity',alpha=0.15)
 
-total <- format(total,digits=4)
-#total_0 <- format(total_0,digits=4)
-#total_4 <- format(total_4,digits=4)
-total_a4 <- format(total_a4,digits=4)
+total <- format(total,digits=4,nsmall=1)
+total_a4 <- format(total_a4,digits=4,nsmall=1)
 
 # summarise
-print(paste('The predicted total number of colds is',total))
-print(paste('The predicted total of families that get no colds is',median(total_0),'with an interquartile range of',quantile(total_0)[4]-quantile(total_0)[2]))
-print(paste('The predicted total of families that get more than 4 colds is',median(total_4),'with an interquartile range of',quantile(total_4)[4]-quantile(total_4)[2]))
-print(paste('The predicted total of colds, treating above 4 as 4, is',total_a4))
+print('+-----------------------------------------------------------------------------+')
+print('|                                   SUMMARY                                   |')
+print('|-----------------------------------------------------------------------------|')
+print(paste('|The predicted total of families that get no colds is',median(total_0),'±',format((quantile(total_0)[4]-quantile(total_0)[2])/2,nsmall=1),'               |'))
+print(paste('|The predicted total of families that get more than 4 colds is',median(total_4),'±',format((quantile(total_4)[4]-quantile(total_4)[2])/2,nsmall=1),'      |'))
+print('|-----------------------------------------------------------------------------|')
+print(paste('|The predicted total number of colds is',total,'                                |'))
+print(paste('|The predicted total of colds, treating above 4 as 4, is',total_a4,'               |'))
+print('+-----------------------------------------------------------------------------+')
 
 pdf(file='plot.pdf') # draw to plot
 print(p)

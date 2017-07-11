@@ -1,7 +1,7 @@
 data <- read.csv('data.csv',header=TRUE,sep=';')
 
 data <- data[data$platform=='PC',]
-data <- data[data$role=='Defender',]
+data <- data[data$role=='Attacker',]
 
 data$skillrank <- NULL
 data$dateid <- NULL
@@ -32,6 +32,17 @@ gign <- ad[grepl('GIGN',ad$operator),]
 sas <- ad[grepl('SAS',ad$operator),]
 geo <- ad[grepl('G.E.O',ad$operator),]
 gsg9 <- ad[grepl('GSG9',ad$operator),]
+seal <- ad[grepl('NAVYSEAL',ad$operator),]
+bope <- ad[grepl('BOPE',ad$operator),]
+
+values = c(nrow(jtf2),nrow(spetznas),nrow(sat),nrow(swat),nrow(gign),nrow(sas),nrow(geo),nrow(gsg9),nrow(seal),nrow(bope))
+labels = c('JTF-2','Spetznas','SAT','FBI','GIGN','SAS','G.E.O','GSG9','NAVY','BOPE')
+
+pdf(file='operators.pdf')
+
+pie(values,labels)
+
+dev.off()
 
 
 print(nrow(jtf2))

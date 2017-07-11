@@ -74,7 +74,8 @@ for(i in 1:20){ # repeats x times and draws to plot
   p <- p + geom_point(data=d2)
 }
 
-p <- p + geom_smooth(data=d,method='loess')
+p <- p + geom_smooth(data=d,method='loess',se=F)
+p <- p + geom_histogram(data=d,stat='identity',alpha=0.15)
 
 total <- format(total,digits=4)
 #total_0 <- format(total_0,digits=4)

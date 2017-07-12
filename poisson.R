@@ -32,13 +32,13 @@ total_pois_4 <- function(freq){
   total_a4
 }
 
-grouping <- function(freq){
+grouping <- function(freq,rep){
   for(j in 1:total_pois_4(freq)){
     r <- runif(1)
     if(r >= 0.75){
-      groups[1,1] <- groups[1,1] + 1
+      groups[rep,1] <- groups[rep,1] + 1
     }else{
-      groups[1,2] <- groups[1,2] + 1
+      groups[rep,2] <- groups[rep,2] + 1
     }
   }
 }
@@ -57,7 +57,7 @@ allocate_time <- function(freq){
   }
 
   t.2 <- table(factor(t,levels=0:200))
-  t.2 <- cumsum(t.2)
+  t.2 <- cumsum(as.numeric(t.2))
   t.2
 }
 
@@ -77,11 +77,18 @@ d <- data.frame(
 
 ti <- data.frame(
   x = 0:200,
-  y = as.numeric(allocate_time(e))
+  y = allocate_time(e)
 )
 print(ti)
 
-grouping(e)
+for(j in 1:total_pois_4(e)){
+  r <- runif(1)
+  if(r >= 0.75){
+    groups[1,1] <- groups[1,1] + 1
+  }else{
+    groups[1,2] <- groups[1,2] + 1
+  }
+}
 
 p <- ggplot(d,aes(x,y)) +
   geom_point() +
@@ -95,7 +102,7 @@ p <- ggplot(d,aes(x,y)) +
 p.t <- ggplot(ti,aes(x,y)) +
   expand_limits(x=0,y=0) +
   scale_x_continuous(expand=c(0,0),limits=c(0,200.5)) +
- scale_y_continuous(expand=c(0,0),limits=c(0,1000)) +
+  scale_y_continuous(expand=c(0,0),limits=c(0,1000)) +
   ggtitle('Simulated increase in clinical illness over time') +
   xlab('Days') +
   ylab('Cases of clinical illness')
@@ -119,10 +126,17 @@ for(i in 2:20){ # repeats x times and draws to plot
   total_0 <- c(total_0, e[1])
   total <- (total + total_pois(e)) / 2
   d <- (d + d2) / 2
-  #ti <- (ti + ti2) / 2
+  ti <- (ti + ti2) / 2
   p <- p + geom_point(data=d2)
 
-  grouping(e)
+  for(j in 1:total_pois_4(e)){
+    r <- runif(1)
+    if(r >= 0.75){
+      groups[i,1] <- groups[i,1] + 1
+    }else{
+      groups[i,2] <- groups[i,2] + 1
+    }
+  }
 }
 
 p <- p + geom_smooth(data=d,method='loess')
@@ -157,6 +171,7 @@ t[7,] <- '20 iterations were ran in this simulation'
 
 # commandline prints
 
+print(groups)
 print('+-----------------------------------------------------------------------------+')
 print('|                                   SUMMARY                                   |')
 print('|-----------------------------------------------------------------------------|')

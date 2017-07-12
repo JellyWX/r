@@ -1,13 +1,34 @@
+      PLACEBO    DRUG
+ [1,]   46.00 34.3750
+ [2,]   43.75 33.7500
+ [3,]   40.25 31.6250
+ [4,]   45.50 32.5000
+ [5,]   39.75 33.7500
+ [6,]   45.75 33.9375
+ [7,]   45.50 33.0625
+ [8,]   42.50 32.5625
+ [9,]   38.25 34.4375
+[10,]   42.25 32.5000
+[11,]   43.25 31.6250
+[12,]   42.75 32.0625
+[13,]   42.50 32.1250
+[14,]   48.00 31.0625
+[15,]   45.50 34.5000
+[16,]   46.75 35.0000
+[17,]   43.75 31.0625
+[18,]   47.00 31.9375
+[19,]   39.25 33.0625
+[20,]   47.00 31.6250
 [1] "+-----------------------------------------------------------------------------+"
 [1] "|                                   SUMMARY                                   |"
 [1] "|-----------------------------------------------------------------------------|"
-[1] "|      The predicted total of families that get no colds is 25.0 ± 2.500      |"
-[1] "| The predicted total of families that get more than 4 colds is 70.5 ± 3.375  |"
+[1] "|      The predicted total of families that get no colds is 22.5 ± 2.250      |"
+[1] "| The predicted total of families that get more than 4 colds is 72.0 ± 3.875  |"
 [1] "|-----------------------------------------------------------------------------|"
-[1] "|                The predicted total number of colds is 742.2                 |"
-[1] "|        The predicted total of colds, treating above 4 as 4, is 691.6        |"
+[1] "|                The predicted total number of colds is 745.2                 |"
+[1] "|        The predicted total of colds, treating above 4 as 4, is 693.4        |"
 [1] "+-----------------------------------------------------------------------------+"
-[1] "|   The predicted clinical illnesses in the placebo group is 0.00 ± 0.00000   |"
-[1] "|    The predicted clinical illnesses in the drug group is 0.00 ± 0.00000     |"
+[1] "|  The predicted clinical illnesses in the placebo group is 43.75 ± 1.68750   |"
+[1] "|    The predicted clinical illnesses in the drug group is 32.53 ± 0.96875    |"
 [1] "+-----------------------------------------------------------------------------+"
 [1] "20 iterations were ran in this simulation"

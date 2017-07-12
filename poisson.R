@@ -45,9 +45,9 @@ grouping <- function(freq,rep){
 
 allocate_time <- function(freq){
   t <- c()
-  for(k in 1:length(freq)){
+  for(k in 2:length(freq)){
     for(l in 1:freq[k]){
-      r <- runif(k)
+      r <- runif(k - 1)
       r <- sort(r,decreasing=T)
       r <- r[1:4]
       r <- r[!is.na(r)]
@@ -79,7 +79,6 @@ ti <- data.frame(
   x = 0:200,
   y = allocate_time(e)
 )
-print(ti)
 
 for(j in 1:total_pois_4(e)){
   r <- runif(1)
@@ -171,7 +170,6 @@ t[7,] <- '20 iterations were ran in this simulation'
 
 # commandline prints
 
-print(groups)
 print('+-----------------------------------------------------------------------------+')
 print('|                                   SUMMARY                                   |')
 print('|-----------------------------------------------------------------------------|')

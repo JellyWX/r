@@ -2,18 +2,8 @@ library(ggplot2)
 
 gen_pois <- function(){
   pois <- rpois(300,2.5)
-  a <- c(0,0,0,0,0,0,0,0,0,0,0)
-  b <- 0
 
-  for(i in pois){
-    if(i > 0){
-      a[i] <- a[i] + 1
-    }else{
-      b <- b + 1
-    }
-  }
-
-  c(b,a)
+  table(factor(pois,levels=0:11))
 }
 
 total_pois <- function(freq){
@@ -41,15 +31,15 @@ total_pois_4 <- function(freq){
   total_a4
 }
 
-e <- gen_pois()
+e <- as.numeric(gen_pois())
 total <- total_pois(e)
 total_0 <- e[1]
 total_4 <- sum(e[5:11])
 total_a4 <- total_pois_4(e)
 
 d <- data.frame(
-  y = e,
-  x = 0:(length(e) - 1)
+  x = 0:11,
+  y = e
 )
 
 p <- ggplot(d,aes(x,y)) +
@@ -59,11 +49,11 @@ p <- ggplot(d,aes(x,y)) +
   scale_y_continuous(expand=c(0,0),limits=c(0,100))
 
 for(i in 1:20){ # repeats x times and draws to plot
-  e <- gen_pois()
+  e <- as.numeric(gen_pois())
 
   d2 <- data.frame(
-    y = e,
-    x = 0:(length(e) - 1)
+    x = 0:11,
+    y = e
   )
 
   total_a4 <- (total_a4 + total_pois_4(e)) / 2
@@ -74,8 +64,8 @@ for(i in 1:20){ # repeats x times and draws to plot
   p <- p + geom_point(data=d2)
 }
 
-p <- p + geom_smooth(data=d,method='loess',se=F)
-p <- p + geom_histogram(data=d,stat='identity',alpha=0.15)
+p <- p + geom_smooth(data=d,method='loess')
+#p <- p + geom_histogram(data=d,stat='identity',alpha=0.15) # unhash this line to draw a histogram
 
 total <- format(total,digits=4,nsmall=1)
 total_a4 <- format(total_a4,digits=4,nsmall=1)

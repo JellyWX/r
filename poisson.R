@@ -32,6 +32,22 @@ total_pois_4 <- function(freq){ # function to calculate the total of colds, but 
   total_a4 # returns
 }
 
+virustypes <- function(t){
+  retval = c(0,0)
+  for(v in 1:t){
+    r <- runif(1)
+    if(r >= 0.5){
+      retval[1] <- retval[1] + 1
+      r <- runif(1)
+      if(r <= 0.65){
+        retval[2] <- retval[2] + 1
+      }
+    }
+  }
+
+  retval
+}
+
 e <- as.numeric(gen_pois()) # as.numeric() returns just the frequencies from the table, and not the reference numbers
 
 total <- total_pois(e) # initialise the total variable
@@ -45,6 +61,8 @@ d <- data.frame( # data for plotting
   x = 0:11,
   y = e
 )
+
+e <- virustypes(e)
 
 ti <- c()
 ti2 <- c() # intialise 2 empty time variables
@@ -121,16 +139,34 @@ for(i in 2:20){ # repeats x times and draws to plot
   old_ti <- ti
   old_ti2 <- ti2
 
+  for(j in 1:e){ # group assigning and time sampling
+    r <- runif(1)
+    if(r >= 0.75){
+      groups[i,1] <- groups[i,1] + 1
+      ti.placebo.clinical <- c(ti,sample(1:200,1))
+    }else{
+      groups[i,2] <- groups[i,2] + 1
+      ti.drug.clinical <- c(ti2,sample(1:200,1))
+    }
+  }
+  ti.placebo.clinical <- as.numeric(table(factor(ti,levels=0:200)))
+  ti.drug.clinical <- as.numeric(table(factor(ti2,levels=0:200)))
+
+  ti <- (ti + old_ti) / 2
+  ti2 <- (ti2 + old_ti2) / 2 # averaging
+
+  e <- virustypes(total_pois_4(e))
+
   ti <- c()
   ti2 <- c() # give these variables different names and then recreate them as empty
 
-  for(j in 1:total_pois_4(e)){ # group assigning and time sampling
+  for(j in 1:e[2]){ # group assigning and time sampling
     r <- runif(1)
     if(r >= 0.75){
       groups[i,1] <- groups[i,1] + 1
       ti <- c(ti,sample(1:200,1))
     }else{
-      groups[i,3] <- groups[i,3] + 1
+      groups[i,2] <- groups[i,2] + 1
       ti2 <- c(ti2,sample(1:200,1))
     }
   }
@@ -180,9 +216,9 @@ drug = groups[,2]
 
 sink('summary.txt',append=F,split=T) # text file summary table
 
-t <- matrix('',nrow=9,ncol=1) # new matrix (2d list) for the summary
+t <- matrix('',nrow=10,ncol=1) # new matrix (2d list) for the summary
 colnames(t) <- c('SUMMARY')
-rownames(t) <- c('','','','','','','','','')
+rownames(t) <- c('','','','','','','','','','')
 
 close = which(abs(d.tt$y-mean(d.tt$y))==min(abs(d.tt$y-mean(d.tt$y)))) # pick out the value from the cumulative days that's closest to the mean
 day = which(d.tt==close) # pick the day that the closest occured on
@@ -196,15 +232,16 @@ day_h = which(d.tt==close_h)
 quart = (close_h - close_l) / 2 # deviation
 
 # 'paste' is R's way of joining 2 strings. add these pasted strings to the matrix 't'
-t[1,] <- paste('The predicted total of families that get no clinical illness is',format(median(total_0),nsmall=1),'±',format((quantile(total_0)[4]-quantile(total_0)[2])/2,nsmall=3))
+t[1,] <- paste('The predicted total of families that get no colds is',format(median(total_0),nsmall=1),'±',format((quantile(total_0)[4]-quantile(total_0)[2])/2,nsmall=3))
 t[2,] <- paste('The predicted total of families that get more than 4 colds is',format(median(total_4),nsmall=1),'±',format((quantile(total_4)[4]-quantile(total_4)[2])/2,nsmall=3))
-t[3,] <- paste('The predicted total number of clinical illnesses is',total)
-t[4,] <- paste('The predicted total of clinical illnesses, treating above 4 as 4, is',total_a4)
-t[5,] <- paste('The predicted clinical illnesses in the placebo group is',format(median(placebo),digits=4,nsmall=2),'±',format((quantile(placebo)[4]-quantile(placebo)[2])/2,nsmall=5,digits=6))
-t[6,] <- paste('The predicted clinical illnesses in the drug group is',format(median(drug),digits=4,nsmall=2),'±',format((quantile(drug)[4]-quantile(drug)[2])/2,nsmall=5,digits=6))
-t[7,] <- paste('The predicted time for half the clinical illnesses to occur is',day,'days ±',quart)
-t[8,] <- paste('The predicted time from half to all infections is',200-day,'days')
-t[9,] <- '20 iterations were ran in this simulation'
+t[3,] <- paste('The predicted total number of colds is',total)
+t[4,] <- paste('The predicted total of colds, treating above 4 as 4, is',total_a4)
+t[5,] <- paste('The predicted rhino/corono virus positive in the placebo group is',format(median(placebo),digits=4,nsmall=2),'±',format((quantile(placebo)[4]-quantile(placebo)[2])/2,nsmall=5,digits=6))
+t[6,] <- paste('The predicted rhino/corono virus positive in the drug group is',format(median(drug),digits=4,nsmall=2),'±',format((quantile(drug)[4]-quantile(drug)[2])/2,nsmall=5,digits=6))
+t[7,] <- paste('The predicted rhino/corono virus positive total is',format(median(drug+placebo)),'±',format((quantile(placebo+drug)[4]-quantile(placebo+drug)[2])/2))
+t[8,] <- paste('The predicted time for half the clinical illnesses to occur is',day,'days ±',quart)
+t[9,] <- paste('The predicted time from half to all infections is',200-day,'days')
+t[10,] <- '20 iterations were ran in this simulation'
 
 # commandline prints
 
@@ -219,11 +256,12 @@ print(paste('|',format(t[4,],width=90,justify='c'),'|'))
 print('+--------------------------------------------------------------------------------------------+')
 print(paste('|',format(t[5,],width=90,justify='c'),'|'))
 print(paste('|',format(t[6,],width=90,justify='c'),'|'))
-print('+--------------------------------------------------------------------------------------------+')
 print(paste('|',format(t[7,],width=90,justify='c'),'|'))
-print(paste('|',format(t[8,],width=90,justify='c'),'|'))
 print('+--------------------------------------------------------------------------------------------+')
-print(t[9,])
+print(paste('|',format(t[8,],width=90,justify='c'),'|'))
+print(paste('|',format(t[9,],width=90,justify='c'),'|'))
+print('+--------------------------------------------------------------------------------------------+')
+print(t[10,])
 
 pdf(file='illness_frequencies.pdf') # draw to plot
 print(p)
